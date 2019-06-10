@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
-	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<munit:config name="storedprocedure-db-test-suite.xml" />
 	<munit:test name="storedprocedure-db-test-suite-InsertEmployeeRecordStoredProcedureFlowTest" description="Test" doc:id="0f98a46c-d3ed-4dff-95bf-147623d3b0f6" >
 		<munit:behavior >
@@ -45,6 +46,57 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that" doc:id="5d86c82c-0b02-4a1d-8f6c-da0d69cbb4be" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="storedprocedure-db-test-suite-DeleteEmployeeRecordFlowTest" description="Test" doc:id="b881a077-250e-46aa-a15c-ba5ac0bc9055" >
+		<munit:behavior>
+			<set-variable value="1" doc:name="Set Variable" doc:id="592c13b4-036f-4154-9fe9-7a1b4d77bcc7" variableName="EmpId"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to DeleteEmployeeRecordFlow" doc:id="bdd18793-6204-4deb-b4aa-5a8f730a59ef" name="DeleteEmployeeRecordFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="65e19bd7-e296-4725-8777-60d6cf262f2a" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="storedprocedure-db-test-suite-GetEmployeeRecord_BY_EmpIdFlowTest" description="Test" doc:id="3a78818b-1aff-4164-bd14-7840cc79707b" >
+		<munit:behavior >
+			<set-variable value="1" doc:name="Set Variable" doc:id="ac2e3904-d91b-4598-a59c-6afb996c09eb" variableName="EmpId"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to GetEmployeeRecord_BY_EmpIdFlow" doc:id="92c68172-a91e-4500-9dab-7f139f6741c7" name="GetEmployeeRecord_BY_EmpIdFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="827febae-1808-426a-a866-8f626cffe2ff" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="storedprocedure-db-test-suite-update_EmployeeRecordFlowTest" description="Test" doc:id="bbbae79e-c399-40bf-b124-0763f0a18af8" >
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="04941c15-4b41-4a5e-802a-1d606a6d00e4" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="EmpId" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-variable>
+					<ee:set-variable variableName="FirstName" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to update_EmployeeRecordFlow" doc:id="c199e478-eb58-402a-9b84-c0e5aebe9a0f" name="update_EmployeeRecordFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="9e586409-4b58-4d32-9cc1-3779f990a062" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
 		</munit:validation>
 	</munit:test>
 
