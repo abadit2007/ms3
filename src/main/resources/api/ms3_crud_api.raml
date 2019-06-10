@@ -1,0 +1,63 @@
+#%RAML 1.0
+version: v1
+title: MS3EmpRecordAPI
+protocols: [HTTP,HTTPS]
+baseUri: localhost:8081
+
+documentation: 
+  - title: Getting Started
+    content: !include Documentation/README.md
+
+/EmployeeRecord:
+ description: Retrieve employee records from employee ID
+ get:       
+    queryParameters: 
+        EmpId?:
+          required: false
+          minLength: 1
+    description: Retrieve employee records from employee ID
+    responses:
+      200:
+        body: 
+          application/json:
+            example: 
+              Message: !include Examples/Get_Emp_Record_Example.json
+ post:
+      body:
+        application/json:
+          examples: 
+            message: !include Examples/Post_Emp_Record_Example.json
+      description: Update employee records for employees.
+      responses:
+        200:
+          body: 
+            application/json:
+             examples:
+              message: !include Examples/Post_Message.json
+ /{EmpId}:
+      description: Put employee records for employees.
+      put:
+        body:
+          application/json:           
+            example: 
+              message: !include Examples/Update_Emp_Record_Example.json
+            description: Put employee records for employees.
+        responses:
+            200:
+              body: 
+                application/json:
+                  example: 
+                    message: !include Examples/Update_Message.json
+      delete:
+            description: Deletes employee records for employees.
+            body:
+              application/json:           
+                example:
+                  message: !include Examples/Delete_Emp_Record_Example.json
+            responses:
+                200:
+                  body: 
+                    application/json:
+                      example: 
+                        message: !include Examples/Delete_Message.json
+                  description: Employee record has been deleted Successfully.

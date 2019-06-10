@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="98777a47-5f5b-4d9d-95d2-e5b212625ead" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Abe@0913" database="mule" />
+	</db:config>
+	<flow name="DeleteEmployeeRecordFlow" doc:id="36464b62-6d2d-4ae0-9f45-9574664bae39" >
+		<db:stored-procedure doc:name="Stored procedure" doc:id="8d42b9f3-51b1-4b72-bff9-5bd55caee099" config-ref="Database_Config1">
+			<db:sql >call SPEmpIdeAddCommDel(:EmpId)
+</db:sql>
+			<db:input-parameters ><![CDATA[#[{'EmpId':vars.EmpId}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<set-payload value="one record is Updated" doc:name="Set Payload" doc:id="e0a76735-b397-4e6c-9446-e628da639516" />
+	</flow>
+	<flow name="InsertEmployeeRecordStoredProcedureFlow" doc:id="600c15cf-75e9-4efa-8700-bad3c5b5d891">
+		<logger level="INFO" doc:name="Logger" doc:id="16e26736-f6ce-4955-8afe-5dbe5fe566b3" message="#[payload.Identification.FirstName],#[payload.Identification.LastName],#[payload.Identification.DOB as Date {format: 'MM/dd/yyyy'} ],#[payload.Identification.Gender],#[payload.Identification.Title], #[payload.Address[0].Addtype],#[payload.Address[0].number],#[payload.Address[0].street],#[payload.Address[0].Unit],#[payload.Address[0].City],#[payload.Address[0].State],#[payload.Address[0].zipcode],#[payload.Communication[0].comtype],#[payload.Communication[0].value],#[payload.Communication[0].preferred]" />
+		<db:stored-procedure doc:name="Stored procedure" doc:id="77918ae3-b7b0-4b4a-9ebd-10c84755f74f" config-ref="Database_Config1">
+			<db:sql>call SPEmpIdeAddComm(:FirstName, :LastName, :DOB, :Gender, :Title,:Addtype, :number, :street, :Unit, :City,  :State, :zipcode,:comtype, :value, :preferred)</db:sql>
+			<db:input-parameters><![CDATA[#[{'FirstName':payload.Identification.FirstName,'LastName':payload.Identification.LastName,'DOB':payload.Identification.DOB as Date {format: 'MM/dd/yyyy'} ,'Gender':payload.Identification.Gender,'Title':payload.Identification.Title,
+'Addtype':payload.Address[0].Addtype,'number':payload.Address[0].number,'street':payload.Address[0].street,'Unit':payload.Address[0].Unit,'City':payload.Address[0].City,'State':payload.Address[0].State,'zipcode':payload.Address[0].zipcode,'comtype':payload.Communication[0].comtype,'value':payload.Communication[0].value,'preferred':payload.Communication[0].preferred}]]]></db:input-parameters>
+		</db:stored-procedure>
+	</flow>
+	<flow name="GetEmployeeRecord_BY_EmpIdFlow" doc:id="12a7417b-377d-4084-bf02-dd6ab130a018" >
+		<db:stored-procedure doc:name="Stored procedure" doc:id="553d57a2-dbd5-49ed-b403-e8f7fdd77545" config-ref="Database_Config1">
+			<db:sql >
+call SPEmpIdeAddCommSelectByID1(:EmpId)</db:sql>
+			<db:input-parameters ><![CDATA[#[{'EmpId':attributes.queryParams.EmpId}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="Transform Message" doc:id="8e624629-578c-4c70-bd67-5fc4207906b4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="Get_All_EmpoloyeeRecordFlow" doc:id="9052d819-2343-4b95-9e74-f6f46190c577" >
+		<db:stored-procedure doc:name="Stored procedure" doc:id="69bcbb45-5694-4f86-877d-44ffccad07fb" config-ref="Database_Config1">
+			<db:sql >call SPEmpIdeAddCommSelectAll()</db:sql>
+		</db:stored-procedure>
+		<ee:transform doc:name="Transform Message" doc:id="65850b3f-4a13-4054-b79c-447835e74ff6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="update_EmployeeRecordFlow" doc:id="de0e48a9-1e58-4c39-91c2-377864dfacb7" >
+		<db:stored-procedure doc:name="Stored procedure" doc:id="25a7da05-f912-410b-95f5-5da3932a50bc" config-ref="Database_Config1">
+			<db:sql > call SPEmpIdeAddCommUpdate3(:EmpId,:FirstName)</db:sql>
+			<db:input-parameters ><![CDATA[#[{'EmpId':attributes.queryParams.EmpId,'FirstName':attributes.queryParams.FirstName}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<set-payload value="Employee RTecords Has been Updated" doc:name="Set Payload" doc:id="b2025433-cd44-4da6-8347-f6f03d4f8af5" />
+	</flow>
+</mule>

@@ -1,0 +1,5 @@
+{
+"message" : "{
+  "DeleteMessage": "Employee records has been deleted Successfully"
+}"
+}
