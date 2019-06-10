@@ -16,5 +16,37 @@ Update/Put: used to update the records in the database tables
 Delete: used to delete the record from database table
 
 
+=============================================
+the is the  input data but I did some some changes on the Type for address and communication as addtype and comtype
+{
+	"Identification": {
+		"FirstName": "Bob",
+		"LastName": "Frederick",
+		"DOB": "06/21/1980",
+		"Gender": "M",
+		"Title": "Manager"
+	},
+	"Address":[ {
+		"Addtype": "home",
+		"number": 1234,
+		"street": "blahblahSt",
+		"Unit": "1 a",
+		"City": "Somewhere",
+		"State": "WV",
+		"zipcode": "12345"
+	}],
+	"Communication": [{
+			"comtype": "email",
+			"value": "bfe@sample.com",
+	  		"preferred" : "true"
+		},
+		{
+			"comtype": "cell",
+			"value": "304-555-8282"
+		}
+	]
+}
+
+
 
 
