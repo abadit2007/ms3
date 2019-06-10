@@ -1,0 +1,84 @@
+SQL statement for table for design the relationships
+  the data base name is mule
+===================================create tables ==============================================================
+ empIdentification
+create table empIdentification (empId int not null primary key auto_increment,FirstName varchar(13),LastName varchar(14),DOB date,Gender char(1),Title varchar(18));
+
+empaddress
+create table empaddress (Addtype varchar(14),number int,street varchar(19), Unit varchar(12),City varchar(13),State char(2),zipcode char(5),EmpId int, foreign key (EmpId) references empIdentification (EmpId));
+
+empcommunication
+create table empeommunication (comtype varchar(12),value varchar(15), preferred varchar(8), EmpId int,foreign key (EmpId) references empIdentification (EmpId));
+===========================================================================================================
+
+==================================Insert stored procedure=================================================================
+delimiter //
+create procedure SPEmpIdeAddComm (IN FirstName varchar(15),IN LastName varchar(15),IN DOB date,IN Gender char(1),IN Title varchar(10),IN Addtype varchar(15),IN number varchar(15),IN street varchar(10),Unit varchar(12), City varchar(15),  State char(2), zipcode char(5),IN Comtype varchar(15),IN value varchar(15),IN preferred varchar(10))
+begin
+DECLARE  EmpId INT DEFAULT 0;
+
+   Insert into empidentification ( FirstName, LastName, DOB, Gender, Title) 
+Values ( FirstName, LastName, DOB, Gender, Title);
+ 
+select  DISTINCT LAST_INSERT_ID() INTO EmpId from empidentification;
+   Insert into empcommunication (Comtype, value, preferred, EmpId)  
+Values (Comtype, value, preferred, EmpId);
+Insert into  empaddress( Addtype, number, street, Unit, City,  State, zipcode, EmpID)  
+Values (Addtype, number, street, Unit, City,  State, zipcode, EmpID);
+end //
+delimiter;
+
+call SPEmpIdeAddComm(:FirstName, :LastName, :DOB, :Gender, :Title,:Addtype, :number, :street, :Unit, :City,  :State, :zipcode,:comtype, :value, :preferred)
+#[{'FirstName':payload.Identification.FirstName,'LastName':payload.Identification.LastName,'DOB':payload.Identification.DOB as Date {format: 'MM/dd/yyyy'} ,'Gender':payload.Identification.Gender,'Title':payload.Identification.Title,
+'Addtype':payload.Address[0].Addtype,'number':payload.Address[0].number,'street':payload.Address[0].street,'Unit':payload.Address[0].Unit,'City':payload.Address[0].City,'State':payload.Address[0].State,'zipcode':payload.Address[0].zipcode,'comtype':payload.Communication[0].comtype,'value':payload.Communication[0].value,'preferred':payload.Communication[0].preferred}]
+
+===================================== Create update stored procedure===============================================================
+
+ delimiter //
+create procedure SPEmpIdeAddCommUpdate3 (IN EmpId int,IN FirstName varchar(15))
+begin
+update empidentification as emp set emp.FirstName=FirstName where emp.EmpId =EmpId;
+end //
+delimiter;
+call SPEmpIdeAddCommUpdate3(:EmpId, :FirstName);
+#[{'EmpId':attributes.queryParams.EmpId,'FirstName':attributes.queryParams.FirstName}]
+
+=================================Create select stored procedure======================================================
+ delimiter //
+create procedure SPEmpIdeAddCommSelectByID1(IN EmpId int)
+begin
+SELECT empidentification.EmpId,empidentification.FirstName, empidentification.LastName, empidentification.DOB, empidentification.Gender, empidentification.Title, empaddress.Addtype, empaddress.number, empaddress.Street, empaddress.Unit,empaddress.City, empaddress.State, empaddress.zipcode, empcommunication.ComType, empcommunication.value,empcommunication.preferred FROM empidentification inner join empaddress on empaddress.EmpId = empidentification.EmpId inner join empcommunication on empcommunication.EmpId = empidentification.EmpId where empidentification.EmpId =EmpId;
+end //
+delimiter;
+
+SPEmpIdeAddCommSelectByID1(EmpId)
+#[{'EmpId':attributes.queryParams.EmpId}]
+
+=================================Create Delete stored procedure=============================================================
+
+ delimiter //
+create procedure SPEmpIdeAddCommDel (IN EmpId int)
+begin
+DELETE empaddress,  empcommunication FROM  empidentification INNER JOIN empaddress on empaddress.EmpId = empidentification.EmpId INNER JOIN empcommunication on empcommunication.EmpId = empidentification.EmpId  WHERE empidentification.EmpId = EmpId;
+end //
+delimiter;
+
+ call SPEmpIdeAddCommDel(EmpId);
+#[{'EmpId':attributes.uriParams.EmpId}]
+
+
+
+
+=============================Create select all stored procedure========================================================
+
+ delimiter //
+create procedure SPEmpIdeAddCommSelectAll()
+begin
+SELECT empidentification.EmpId,empidentification.FirstName, empidentification.LastName, empidentification.DOB, empidentification.Gender, empidentification.Title, empaddress.Addtype, empaddress.number, empaddress.Street, empaddress.Unit,empaddress.City, empaddress.State, empaddress.zipcode, empcommunication.ComType, empcommunication.value,empcommunication.preferred FROM empidentification inner join empaddress on empaddress.EmpId = empidentification.EmpId inner join empcommunication on empcommunication.EmpId = empidentification.EmpId;
+end //
+delimiter;
+
+call SPEmpIdeAddCommSelectAll()
+
+====================================================================================================
+
