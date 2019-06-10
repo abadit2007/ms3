@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
-		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="storedprocedure-db-test-suite.xml" />
 	<munit:test name="storedprocedure-db-test-suite-InsertEmployeeRecordStoredProcedureFlowTest" description="Test" doc:id="0f98a46c-d3ed-4dff-95bf-147623d3b0f6" >
 		<munit:behavior >
@@ -37,13 +38,13 @@
 			"value": "304-555-8282"
 		}
 	]
-}' doc:name="Set Payload" doc:id="84f45eab-ac67-418e-8694-5f9063e03b30" />
+}' doc:name="Set Payload" doc:id="84f45eab-ac67-418e-8694-5f9063e03b30" mimeType="application/json"/>
 		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to InsertEmployeeRecordStoredProcedureFlow" doc:id="8d4266d7-93f5-4fcb-a86a-0f80019b168f" name="InsertEmployeeRecordStoredProcedureFlow"/>
+		<munit:execution>
+			<flow-ref doc:name="Flow Reference" doc:id="e5112eee-0450-41b5-9ad7-5136940de88d" name="post:\EmployeeRecord:ms3_crud_api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that" doc:id="5d86c82c-0b02-4a1d-8f6c-da0d69cbb4be" expression="#[payload]" is="#[payload]"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="5d86c82c-0b02-4a1d-8f6c-da0d69cbb4be" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
 		</munit:validation>
 	</munit:test>
 
