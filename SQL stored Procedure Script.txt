@@ -11,7 +11,7 @@ empcommunication
 create table empeommunication (comtype varchar(12),value varchar(15), preferred varchar(8), EmpId int,foreign key (EmpId) references empIdentification (EmpId));
 ===========================================================================================================
 
-==================================Insert stored procedure=================================================================
+==================================create Insert stored procedure=================================================================
 delimiter //
 create procedure SPEmpIdeAddComm (IN FirstName varchar(15),IN LastName varchar(15),IN DOB date,IN Gender char(1),IN Title varchar(10),IN Addtype varchar(15),IN number varchar(15),IN street varchar(10),Unit varchar(12), City varchar(15),  State char(2), zipcode char(5),IN Comtype varchar(15),IN value varchar(15),IN preferred varchar(10))
 begin
